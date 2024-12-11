@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 
 class Main{
+    abstract void buttonhandler()
+
     public static void main(String[] args){
         JFrame window = new JFrame();
         window.setTitle("Calculator");
@@ -22,21 +24,39 @@ class Main{
         ui.setPreferredSize(new Dimension(280,100));
         ui.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
-        JPanel button = new JPanel();
-        button.setMaximumSize(new Dimension(280,350));
-        button.setMinimumSize(new Dimension(280,350));
-        button.setPreferredSize(new Dimension(280,350));
-        button.setBackground(Color.BLUE);
-        button.setLayout(new GridBagLayout());
+        JPanel component = new JPanel();
+        component.setMaximumSize(new Dimension(280,350));
+        component.setMinimumSize(new Dimension(280,350));
+        component.setPreferredSize(new Dimension(280,350));
+        component.setBackground(Color.BLUE);
+        component.setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
 
         //make the component
 
+        JButton[] button = new JButton[10];
+        {
+            byte index = 0;
+            for (byte i=0;i<3;i++){
+                for (byte j = 0;j<3;j++) {
+                    button[index] = new JButton(Integer.toString(index + 1));
+                    gbc.gridx = j;
+                    gbc.gridy = i;
+                    component.add(button[index], gbc);
+                    index++;
+                }
+            }
+            button[9] = new JButton("0");
+            gbc.gridx = 1;
+            gbc.gridy = 3;
+            component.add(button[9],gbc);
+        }
+
         window.add(Box.createVerticalStrut(5));
         window.add(ui);
         window.add(Box.createVerticalStrut(5));
-        window.add(button);
+        window.add(component);
 
     }
 }
