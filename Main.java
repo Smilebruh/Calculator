@@ -1,49 +1,68 @@
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.awt.event.*;
-
 
 class Main{
     private static String value1 = "";
     private static String value2 = "";
     private static long result;
-
+    private static String operation = "";
+    private static boolean isNumber = false;
     private static boolean isOperator = false;
 
-    private static void operatorhandler(String text,JLabel lab){
-        if (!isOperator) {
-            lab.setText(lab.getText() + " " + text + " ");
-            isOperator = true;
-        }else{
-            switch (text){
-                case "+":
-                    result = Long.parseLong(value1) + Long.parseLong(value2);
-                    break;
-                case "-":
-                    result = Long.parseLong(value1) - Long.parseLong(value2);
-                    break;
-                case "x":
-                    result = Long.parseLong(value1) * Long.parseLong(value2);
-                    break;
-                case ":":
-                    result = Long.parseLong(value1) / Long.parseLong(value2);
-                    break;
-            }
-            lab.setText(Long.toString(result));
-            isOperator = false;
-        }
+    private static void count(){
+        switch (operation) {
+            case "+":
+                result = Long.parseLong(value1) + Long.parseLong(value2);
+                break;
+            case "-":
+                result = Long.parseLong(value1) - Long.parseLong(value2);
+                break;
+            case "x":
+                result = Long.parseLong(value1) * Long.parseLong(value2);
+                break;
+            case ":":
+                result = Long.parseLong(value1) / Long.parseLong(value2);
+                break;
 
+        }
+    }
+
+    private static void eq(JLabel lab){
+        count();
+        lab.setText(!lab.getText().isEmpty()? Long.toString(result) : "0");
+        isOperator = true;
+    }
+
+    private static void operatorhandler(String text,JLabel lab){
+
+        if (isNumber) {
+            if (!isOperator) {
+                lab.setText(lab.getText() + " " + text + " ");
+                isOperator = true;
+                operation = text;
+            }else {
+                count();
+
+                value1 = Long.toString(result);
+                lab.setText(Long.toString(result) + " " + text + " ");
+                operation = text;
+
+                isOperator = true;
+                value2 = "";
+            }
+            isNumber = text.equals("=");
+
+        }
     }
 
     private static void numberhandler(String text,JLabel lab){
-        System.out.println("the button has pressed"+text);
-        if (isOperator){
+        if (!isOperator){
             value1+=text;
         }else{
             value2+=text;
         }
         lab.setText(lab.getText() + text);
+        isNumber = true;
     }
 
     public static void main(String[] args){
@@ -71,19 +90,12 @@ class Main{
         component.setMaximumSize(new Dimension(280,350));
         component.setMinimumSize(new Dimension(280,350));
         component.setPreferredSize(new Dimension(280,350));
-        component.setBackground(Color.BLUE);
         component.setLayout(new BoxLayout(component,BoxLayout.X_AXIS));
 
         JPanel div1 = new JPanel();
         div1.setLayout(new GridBagLayout());
 
-
-        JPanel div2 = new JPanel();
-        div2.setBackground(Color.WHITE);
-        div2.setLayout(new GridBagLayout());
-
         component.add(div1);
-       // component.add(div2);
 
         //make the component
 
@@ -124,7 +136,11 @@ class Main{
                 final byte j = i;
                 operator[i] = new JButton(Character.toString(x[i]));
                 operator[i].setPreferredSize(new Dimension(45,40));
-                operator[i].addActionListener(event -> operatorhandler(Character.toString(x[j]),label));
+                if (x[j] != '=') {
+                    operator[i].addActionListener(event -> operatorhandler(Character.toString(x[j]), label));
+                }else{
+                    operator[i].addActionListener(event -> eq(label));
+                }
 
                 gbc.gridx = 3;
                 gbc.gridy = (int)i;
