@@ -36,14 +36,16 @@ class Main{
     }
 
     private static void dothandler(JLabel lab) {
-        if (!(isNumber && isDot) ) {
-            if (!isOperator) {
-                value1 += ".";
-            } else {
-                value2 += ".";
+        if(isNumber) {
+            if (!isDot) {
+                if (!isOperator) {
+                    value1 += ".";
+                } else {
+                    value2 += ".";
+                }
+                lab.setText(lab.getText() + ".");
+                isDot = true;
             }
-            lab.setText(lab.getText() + ".");
-            isDot = true;
         }
     }
 
